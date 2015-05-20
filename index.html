@@ -60,56 +60,57 @@
                 <section>
                     <h2>Table of contents</h2>
                     <ul>
-                        <li>Why REST?</li>
+                        <li>Goals of REST</li>
                         <li>Process vs data oriented API design</li>
                         <li>Media types in API's</li>
-                        <li>Evolving a process-oriented API</li>
+                        <li>Best practices / lessons learned</li>
                     </ul>
                 </section>
 
                 <!-- WHY -->
 
                 <section>
-                    <h1>Why REST?</h1>
+                    <h1>Goals of REST</h1>
                     <ul>
                         <li>Loose coupling of client and server</li>
                         <li>Scalable</li>
                         <li>Use existing web infrastructure</li>
-                        <li>The web seems to work well enough!</li>
                     </ul>
+                    <p>The web seems to work well enough, let's design API's the same way</p>
                 </section>
 
                 <!-- DESIGN -->
 
                 <section>
-                    <h1>Process vs data oriented API design</h1>
+                    <h1>REST API design</h1>
                     <blockquote>But isn't REST just exposing my DB tables as resources?</blockquote>
                 </section>
 
                 <section>
-                    <h2>How to design your API</h2>
+                    <h2>How to design your REST API</h2>
                     <p class="fragment">Step 1 - Design your process</p>
                     <p class="fragment">Step 2 - Design your process!</p>
                     <p class="fragment">Step 3 - Design your process!!</p>
                 </section>
 
                 <section>
-                    <h2>Data oriented design</h2>
+                    <h1>Data oriented design</h1>
                 </section>
 
                 <section>
-                    <h3>How?</h3>
+                    <h2>How?</h2>
                     <p>Simple!</p>
                     <ul>
                         <li>Expose DB tables / ORM models als resources</li>
+                        <li>Use relations between entities as link relations</li>
                         <li>Use HTTP verbs for CRUD</li>
                     </ul>
-                    <p>Or use <a href="https://github.com/jeffknupp/sandman">https://github.com/jeffknupp/sandman</a></p>
+                    <p>Or use <a target="_blank" href="https://github.com/jeffknupp/sandman">https://github.com/jeffknupp/sandman</a></p>
                 </section>
 
                 <section>
                     <section>
-                        <h3>Example case</h3>
+                        <h2>Example case</h2>
                     </section>
 
                     <section>
@@ -131,11 +132,15 @@
                         <h3>Flow</h3>
                         <pre><code data-trim contenteditable>
 GET /coffeetypes
+
 GET /baristas
+
 POST /cupsofcoffee
-&lt;- /cupsofcoffee/xyz
+  &lt;- { self: /cupsofcoffee/xyz }
+
 POST /orders { cupsofcoffee: xyz, barista: ... }
                         </code></pre>
+                        <p class="fragment">What's missing?</p>
                     </section>
 
                     <section>
@@ -150,7 +155,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <h3>Advantages</h3>
+                    <h2>Advantages</h2>
                     <ul>
                         <li>Easy to build</li>
                         <li>Flexible clients</li>
@@ -158,7 +163,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <h3>Disadvantages</h3>
+                    <h2>Disadvantages</h2>
                     <ul>
                         <li>Hard to build clients</li>
                         <li>Logic in clients (DRY?)</li>
@@ -168,7 +173,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <h3>When data-oriented design?</h3>
+                    <h2>When data-oriented design?</h2>
                     <ul>
                         <li>Internal API's</li>
                         <li>Flexibility of clients is essential</li>
@@ -177,84 +182,101 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <section>
-                        <h2>Process oriented design</h2>
-                    </section>
-
-                    <section>
-                        <h3>Principles</h3>
-                        <ul>
-                            <li>Design API for a purpose</li>
-                            <li>Limit flexibility for ease of use and efficiency</li>
-                            <li>Focus on relations (and process), not on resources (and data)</li>
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h3>How?</h3>
-                    </section>
-
-                    <section>
-                        <h3>Model your process seen from the end-user</h3>
-                        <p>State diagram, flow chart, use case, BPMN, words, whatever</p>
-                    </section>
-
-                    <section>
-                        <h3>Coffee process</h3>
-                        <img src="img/coffee_process.png"/>
-                    </section>
-
-                    <section>
-                        <h3>Determine which steps your API supports</h3>
-                        <img src="img/coffee_process_2.png"/>
-                        <p>Depends on what you're building</p>
-                    </section>
-
-                    <section>
-                        <h3>For every step: "Invent" resource</h3>
-                        <p>Base design decisions on what the <strong>API user</strong> wants to achieve</p>
-                        <ul>
-                            <li>Available verbs come from HTTP</li>
-                            <li>Resource has to be a <strong>noun</strong></li>
-                            <li>Avoid /orders/create or /barista/order</li>
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h3>Coffee resources</h3>
-                        <pre><code data-trim contenteditable>
-/coffeetypes            GET
-/baristas               GET
-/quote                  GET
-/orders (or /payments   GET, POST
-                        </code></pre>
-                    </section>
-
-                    <section>
-                        <h3>For every resource: Determine relations</h3>
-                        <p>This is <strong>essential</strong></p>
-                        <ul>
-                            <li>The API should "flow" (discoverable)</li>
-                            <li>Use link relations, never rely on URL hardcoding</li>
-                            <li>Use standard link relations where possible (<a href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA.org</a>)</li>
-                            <li>Properly document your own relations</li>
-                        </ul>
-                    </section>
-
-                    <section>
-                        <h3>Example relations</h3>
-                        <img src="img/rels.png"/>
-                        <img src="img/ticketshoprel.png"/>
-                    </section>
-
-                    <section>
-                        <h3>Now consider which data is involved for every resource</h3>
-                        <p>Don't be afraid to manipulate multiple (or no!) DB tables for one resource</p>
-                    </section>
+                    <h1>Process oriented design</h1>
                 </section>
 
                 <section>
-                    <h3>Advantages</h3>
+                    <h2>Principles</h2>
+                    <ul>
+                        <li>Design API for a purpose</li>
+                        <li>Limit flexibility for ease of use and efficiency</li>
+                        <li>Focus on relations (and process), not on resources (and data)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>How?</h2>
+                    <ul>
+                        <li>Model your process as seen from the end-user</li>
+                        <li>Determine which steps in this process your API supports</li>
+                        <li>For every step: "Invent" resource</li>
+                        <li>For every resource: Determine relations</li>
+                        <li>Finally: Consider which data is involved for each resource</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Model your process as seen from the end-user</h2>
+                    <p>State diagram, flow chart, use case, BPMN, words, whatever</p>
+                </section>
+
+                <section>
+                    <h2>Coffee process</h2>
+                    <img src="img/coffee_process.png"/>
+                </section>
+
+                <section>
+                    <h2>Determine which steps in this process your API supports</h2>
+                    <img src="img/coffee_process_2.png"/>
+                </section>
+
+                <section>
+                    <h2>For every step: "Invent" resource</h2>
+                    <ul>
+                        <li>Resource has to be a <strong>noun</strong></li>
+                        <li>Verbs come from HTTP</li>
+                        <li>Avoid /orders/create or /barista/order</li>
+                    </ul>
+                    <p>Base design decisions on what the <strong>API user</strong> wants to achieve</p>
+                </section>
+
+                <section>
+                    <h2>Coffee resources</h2>
+                    <pre><code data-trim contenteditable>
+/coffeetypes            GET
+/quote                  GET
+/orders (or /payments)  GET, POST
+
+Maybe /baristas?        GET
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>For every resource: Determine relations</h2>
+                    <p>This is <strong>essential</strong></p>
+                    <ul>
+                        <li>The API should guide you</li>
+                        <li>Use link relations, never rely on URL hardcoding</li>
+                        <li>Use standard link relations where possible (<a target="_blank" href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA.org</a>)</li>
+                        <li>Properly and extensively document your own relations</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>The coffee must flow</h2>
+                    <pre><code data-trim contenteditable>
+GET /coffeetypes
+
+GET /quote?coffeetype=xyz&amp;quantity=2
+&lt;- { _links: { place_order: /orders }, ... }
+
+POST /orders { coffee: [ /coffeetypes/xyz: 2 ] }
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Example relations</h2>
+                    <img src="img/rels.png"/>
+                    <img src="img/ticketshoprel.png"/>
+                </section>
+
+                <section>
+                    <h2>Finally: consider which data is involved for every resource</h2>
+                    <p>Don't be afraid to manipulate multiple (or no!) DB tables for one resource</p>
+                </section>
+
+                <section>
+                    <h2>Advantages</h2>
                     <ul>
                         <li>Logic on server</li>
                         <li>Building clients is easy</li>
@@ -264,45 +286,42 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <h3>Disadvantages</h3>
+                    <h2>Disadvantages</h2>
                     <ul>
                         <li>Less flexible (but can be built into design)</li>
                         <li>Initial design is difficult</li>
                     </ul>
                 </section>
-            </section>
 
-            <!-- MEDIATYPES -->
+                <!-- MEDIATYPES -->
 
-            <section>
-                <h1>Media types in API's</h1>
-                <blockquote>Can't we just use HTML in the API?</blockquote>
-            </section>
-
-            <section>
-                <h2>Why consider API media types?</h2>
-                <ul>
-                    <li>Docs and tooling already written</li>
-                    <li>Handling of link relations, collections, etc already defined</li>
-                    <li>Why reinvent the wheel?</li>
-                </ul>
-            </section>
-
-            <section>
                 <section>
-                    <h2>Some media types</h2>
+                    <h1>Media types in API's</h1>
+                    <blockquote>Can't we just use HTML in the API?</blockquote>
                 </section>
 
                 <section>
-                    <h2>HAL</h2>
+                    <h2>Why consider API media types?</h2>
                     <ul>
-                        <li>Minimalistic</li>
-                        <li>Process-oriented</li>
-                        <li>Embrace HTTP standards</li>
-                        <li>First of its kind</li>
+                        <li>Docs and tooling already written</li>
+                        <li>Handling of link relations, collections, etc already defined</li>
+                        <li>Why reinvent the wheel?</li>
                     </ul>
-                    <a href="http://stateless.co/hal_specification.html">http://stateless.co/hal_specification.html</a>
-                    <pre><code data-trim contenteditable>
+                </section>
+
+                <section>
+                    <section>
+                        <h2>Some media types</h2>
+                    </section>
+
+                    <section>
+                        <h2>HAL</h2>
+                        <p><a target="_blank" href="http://stateless.co/hal_specification.html">http://stateless.co/hal_specification.html</a></p>
+                        <ul>
+                            <li>Minimalistic -&gt; Embrace HTTP standards</li>
+                            <li>Process-oriented</li>
+                        </ul>
+                        <pre><code data-trim contenteditable>
 {
     "_links": {
         "self": { "href": "/orders" },
@@ -323,19 +342,17 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
         }]
     }
 }
-                     </code></pre>
-                    <p>Check out <a href="https://github.com/paylogic/halogen">https://github.com/paylogic/halogen</a></p>
-                </section>
+                         </code></pre>
+                    </section>
 
-                <section>
-                    <h2>JSON API</h2>
-                    <ul>
-                        <li>From Ruby world</li>
-                        <li>CRUD oriented</li>
-                        <li>All included</li>
-                    </ul>
-                    <a href="http://jsonapi.org/">http://jsonapi.org/</a>
-                    <pre><code data-trim contenteditable>
+                    <section>
+                        <h2>JSON API</h2>
+                        <p><a target="_blank" href="http://jsonapi.org/">http://jsonapi.org/</a></p>
+                        <ul>
+                            <li>CRUD oriented</li>
+                            <li>"Batteries included"</li>
+                        </ul>
+                        <pre><code data-trim contenteditable>
 {
   "links": {
     "self": "http://example.com/posts",
@@ -369,16 +386,16 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
     }
   }]
 }
-                         </code></pre>
-                </section>
+                             </code></pre>
+                    </section>
 
-                <section>o
-                    <h2>Mason</h2>
-                    <ul>
-                        <li>Like HAL, but with actiions</li>
-                    </ul>
-                    <a href="https://github.com/JornWildt/Mason">https://github.com/JornWildt/Mason</a>
-                    <pre><code data-trim contenteditable>
+                    <section>
+                        <h2>Mason</h2>
+                        <a target="_blank" href="https://github.com/JornWildt/Mason">https://github.com/JornWildt/Mason</a>
+                        <ul>
+                            <li>Like HAL, but with actiions</li>
+                        </ul>
+                        <pre><code data-trim contenteditable>
 {
   "ID": 1,
   "Title": "Program crashes when pressing ctrl-p",
@@ -401,38 +418,40 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
     }
 }
                          </code></pre>
-                </section>
+                    </section>
 
-                <section>
-                    <h2>JSON Patch</h2>
-                    <a href="http://jsonpatch.com/">http://jsonpatch.com/</a>
-                    <pre><code data-trim contenteditable>
-The original document
+                    <section>
+                        <h2>JSON Patch</h2>
+                        <a target="_blank" href="http://jsonpatch.com/">http://jsonpatch.com/</a>
+                        <pre><code data-trim contenteditable>
+The original document:
 {
   "baz": "qux",
   "foo": "bar"
 }
-The patch
+The patch:
 [
   { "op": "replace", "path": "/baz", "value": "boo" },
   { "op": "add", "path": "/hello", "value": ["world"] },
   { "op": "remove", "path": "/foo"}
 ]
-The result
+The result:
 {
    "baz": "boo",
    "hello": ["world"]
 }
                          </code></pre>
-                </section>
+                    </section>
 
-                <section>
-                    <h2>vnd.error</h2>
-                    <a href="https://github.com/blongden/vnd.error">https://github.com/blongden/vnd.error</a>
-                    <pre><code data-trim contenteditable>
+                    <section>
+                        <h2>vnd.error</h2>
+                        <a target="_blank" href="https://github.com/blongden/vnd.error">https://github.com/blongden/vnd.error</a>
+                        <pre><code data-trim contenteditable class="json">
 {
     "logref": "42",
-    "message": "A payment method is needed for the creation of an order. Please retrieve a bill for the selected products to see which payment methods are available.",
+    "message": "A payment method is needed for the creation of an
+        order. Please retrieve a bill for the selected products to
+        see which payment methods are available.",
     "type": "BAD_REQUEST",
     "_links": {
         "help": {
@@ -442,97 +461,105 @@ The result
     }
 }
                          </code></pre>
+                    </section>
                 </section>
-            </section>
 
-            <!-- EVOLVING -->
-
-            <section>
-                <h1>Evolving your process-oriented REST API</h1>
-            </section>
-
-            <section>
-                <h2>First fit it in the process</h2>
-                <p>If it doesn't fit, don't build it (or build another API)</p>
-            </section>
-
-            <section>
-                <h2>Leave your options open</h2>
-                <ul>
-                    <li>What are my options?</li>
-                    <li>Which changes are coming up?</li>
-                    <li>For each choice: Does it close off other interesting paths / extensions / alternatives?</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Push for clients using link relations</h2>
-                <p>And build in a mechanism for deprecation</p>
-            </section>
-
-            <!-- MISC -->
-
-            <section>
-                <section>
-                    <h1>Best practices</h1>
-                </section>
+                <!-- MISC -->
 
                 <section>
-                    <h2>Always show all keys</h2>
-                    <p>With sensible empty default</p>
+                    <section>
+                        <h1>Best practices / lessons learned</h1>
+                    </section>
+
+                    <section>
+                        <h2>Always show as much as you safely can</h2>
+                        <ul>
+                            <li>All entities</li>
+                            <li>All attributes (with sensible empty defaults)</li>
+                        </ul>
+                        <p><small>If needed, allow client to filter them out (via header or query parameter)</small></p>
+                    </section>
+
+                    <section>
+                        <h2>Documentation</h2>
+                        <p>Write documentation from process-perspective: What does the client developer want to achieve?</p>
+                        <p>Discoverability is no replacement for documentation</p>
+                    </section>
+
+                    <section>
+                        <h2>Discoverability</h2>
+                        <p>You don't have to design for run-time discoverability</p>
+                        <p>New relations mean implementation time at the client</p>
+                    </section>
+
+                    <section>
+                        <h2>Focus on the unhappy paths</h2>
+                        <p>Design ALL error messages your API can generate and document them!</p>
+                    </section>
+
+                    <section>
+                        <h2>When implementing change: Leave your options open</h2>
+                        <ul>
+                            <li>What are my options?</li>
+                            <li>Which changes are coming up?</li>
+                            <li>For each choice: Does it close off other interesting paths / extensions / alternatives?</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2>Push for clients using link relations</h2>
+                        <p>And build in a mechanism for link deprecation</p>
+                    </section>
                 </section>
-            </section>
 
-            <!-- CLOSE -->
+                <!-- CLOSE -->
 
-            <section>
-                <h1>That's it!</h1>
-                <p>Questions?</p>
-            </section>
+                <section>
+                    <h1>That's it!</h1>
+                    <h5>Reading material</h5>
+                    <ul>
+                        <li>REST in Practice - Jim Webber et al</li>
+                        <li>RESTful Web Services Cookbook - Subbu Allamaraju</li>
+                        <li>Google groups: api-craft, hal-discuss</li>
+                    </ul>
+                    <p>Want to work on a cool API? See <a target="_blank" href="http://www.paylogic.com/en/vacancy/">http://www.paylogic.com/en/vacancy/</a></p>
+                    <p class="fragment">Questions?</p>
+                </section>
+            </div>
 
-            <section>
-                <h2>Reading material</h2>
-                <ul>
-                    <li>REST in Practice - Jim Webber et al</li>
-                    <li>RESTful Web Services Cookbook - Subbu Allamaraju</li>
-                    <li>Google groups: api-craft, hal-discuss</li>
-                </ul>
-            </section>
         </div>
 
-    </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
 
-    <script src="lib/js/head.min.js"></script>
-    <script src="js/reveal.js"></script>
+        <script>
 
-    <script>
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
 
-        // Full list of configuration options available here:
-        // https://github.com/hakimel/reveal.js#configuration
-        Reveal.initialize({
-            controls: true,
-            progress: true,
-            history: true,
-            center: true,
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
 
-            theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-            transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+                // Parallax scrolling
+                // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+                // parallaxBackgroundSize: '2100px 900px',
 
-            // Parallax scrolling
-            // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-            // parallaxBackgroundSize: '2100px 900px',
-
-            // Optional libraries used to extend on reveal.js
-            dependencies: [
-                { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-                { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-                { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-                { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-            ]
-        });
-    </script>
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+        </script>
 
     </body>
 </html>
