@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>Designing a REST API - A process oriented approach</title>
+        <title>Designing REST API's - A process oriented approach</title>
 
         <meta name="description" content="">
         <meta name="author" content="Lars de Ridder">
@@ -43,7 +43,7 @@
             <!-- Any section element inside of this container is displayed as a slide -->
             <div class="slides">
                 <section>
-                    <h1>Designing a REST API</h1>
+                    <h1>Designing REST API's</h1>
                     <p>A process oriented approach</p>
                 </section>
 
@@ -135,10 +135,10 @@ GET /coffeetypes
 
 GET /baristas
 
-POST /cupsofcoffee
+POST /cupsofcoffee { coffee_type: ... }
   &lt;- { self: /cupsofcoffee/xyz }
 
-POST /orders { cupsofcoffee: xyz, barista: ... }
+POST /orders { cupsofcoffee: [ xyz ], barista: ... }
                         </code></pre>
                         <p class="fragment">What's missing?</p>
                     </section>
@@ -157,7 +157,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 <section>
                     <h2>Advantages</h2>
                     <ul>
-                        <li>Easy to build</li>
+                        <li>Easy to design and build</li>
                         <li>Flexible clients</li>
                     </ul>
                 </section>
@@ -176,6 +176,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                     <h2>When data-oriented design?</h2>
                     <ul>
                         <li>Internal API's</li>
+                        <li>HTML ORM's</li>
                         <li>Flexibility of clients is essential</li>
                         <li>You're <strike>lazy</strike> pressed for time</li>
                     </ul>
@@ -198,7 +199,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                     <h2>How?</h2>
                     <ul>
                         <li>Model your process as seen from the end-user</li>
-                        <li>Determine which steps in this process your API supports</li>
+                        <li>Determine which steps in this process your client supports</li>
                         <li>For every step: "Invent" resource</li>
                         <li>For every resource: Determine relations</li>
                         <li>Finally: Consider which data is involved for each resource</li>
@@ -216,7 +217,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
                 </section>
 
                 <section>
-                    <h2>Determine which steps in this process your API supports</h2>
+                    <h2>Determine which steps in this process your client supports</h2>
                     <img src="img/coffee_process_2.png"/>
                 </section>
 
@@ -232,6 +233,7 @@ POST /orders { cupsofcoffee: xyz, barista: ... }
 
                 <section>
                     <h2>Coffee resources</h2>
+                    <p>Operations: Choose coffee type, order with barista, and pay</p>
                     <pre><code data-trim contenteditable>
 /coffeetypes            GET
 /quote                  GET
@@ -245,8 +247,8 @@ Maybe /baristas?        GET
                     <h2>For every resource: Determine relations</h2>
                     <p>This is <strong>essential</strong></p>
                     <ul>
-                        <li>The API should guide you</li>
-                        <li>Use link relations, never rely on URL hardcoding</li>
+                        <li>The API should guide the client</li>
+                        <li>Use link relations, never rely on URL's</li>
                         <li>Use standard link relations where possible (<a target="_blank" href="http://www.iana.org/assignments/link-relations/link-relations.xhtml">IANA.org</a>)</li>
                         <li>Properly and extensively document your own relations</li>
                     </ul>
@@ -288,7 +290,7 @@ POST /orders { coffee: [ /coffeetypes/xyz: 2 ] }
                 <section>
                     <h2>Disadvantages</h2>
                     <ul>
-                        <li>Less flexible (but can be built into design)</li>
+                        <li>Less flexible clients (but can be built into design)</li>
                         <li>Initial design is difficult</li>
                     </ul>
                 </section>
@@ -301,11 +303,26 @@ POST /orders { coffee: [ /coffeetypes/xyz: 2 ] }
                 </section>
 
                 <section>
+                    <h2>What is a media type for API's</h2>
+                    <p>Standard on how to format your (JSON) response, containing conventions to combat bike-shedding</p>
+                </section>
+
+                <section>
                     <h2>Why consider API media types?</h2>
                     <ul>
                         <li>Docs and tooling already written</li>
-                        <li>Handling of link relations, collections, etc already defined</li>
+                        <li>Conventions for many concepts</li>
                         <li>Why reinvent the wheel?</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>What do they define?</h2>
+                    <ul>
+                        <li>Link relations (and deprecation)</li>
+                        <li>Collections</li>
+                        <li>Error messages</li>
+                        <li>Resource embedding</li>
                     </ul>
                 </section>
 
