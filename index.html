@@ -72,7 +72,8 @@
                     <ul>
                         <li>Goals of REST</li>
                         <li>Process vs data oriented API design</li>
-                        <li>Media types in API's</li>
+                        <li>Media types for API's</li>
+                        <li>Documentation and Discoverability</li>
                         <li>Best practices / lessons learned</li>
                     </ul>
                 </section>
@@ -318,12 +319,12 @@ POST /orders { coffee: [ /coffeetypes/xyz: 2 ] }
                 <!-- MEDIATYPES -->
 
                 <section>
-                    <h1>Media types in API's</h1>
-                    <blockquote>Can't we just use HTML in the API?</blockquote>
+                    <h1>Media types for API's</h1>
+                    <blockquote>Can't we just use HTML?</blockquote>
                 </section>
 
                 <section>
-                    <h2>What is a media type for API's</h2>
+                    <h2>What is an API media type</h2>
                     <p>Standard on how to format your (JSON) response, containing conventions to combat bike-shedding</p>
                 </section>
 
@@ -343,6 +344,7 @@ POST /orders { coffee: [ /coffeetypes/xyz: 2 ] }
                         <li>Collections</li>
                         <li>Error messages</li>
                         <li>Resource embedding</li>
+                        <li>POST schemas</li>
                     </ul>
                 </section>
 
@@ -479,6 +481,34 @@ The result:
 }
                          </code></pre>
                     </section>
+					
+                    <section>
+                        <h2>JSON Schema</h2>
+                        <a target="_blank" href="http://json-schema.org/">http://json-schema.org/</a>
+						<ul>
+                            <li>Describe data format</li>
+                        </ul>
+                        <pre><code data-trim contenteditable class="json">
+{
+	"title": "Example Schema",
+	"type": "object",
+	"properties": {
+		"firstName": {
+			"type": "string"
+		},
+		"lastName": {
+			"type": "string"
+		},
+		"age": {
+			"description": "Age in years",
+			"type": "integer",
+			"minimum": 0
+		}
+	},
+	"required": ["firstName", "lastName"]
+}
+                         </code></pre>
+                    </section>
 
                     <section>
                         <h2>vnd.error</h2>
@@ -500,12 +530,52 @@ The result:
                          </code></pre>
                     </section>
                 </section>
+				
+				<section>
+					<h1>Documentation and Discoverability</h1>
+					<blockquote>I don't need to write any documentation. My API is discoverable.</blockquote>
+				</section>
+
+				<section>
+					<h2>What is discoverability?</h2>
+					<ul>
+						<li>Allow client to "discover" what he can do</li>
+						<li>Links and actions only appear when relevant</li>
+						<li>The flow through the API is clear in every state</li>
+						<li>The server "owns" the process and is explicit about it</li>
+					</ul>
+				</section>
+				
+				<section>
+					<h2>Why is discoverability relevant?</h2>
+					<ul>
+						<li>Not for run-time discovery: Clients are not that advanced</li>
+						<li>Rather: Loose coupling between client and process + URI structure</li>
+						<li>So: Development-time discovery</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Documentation</h2>
+					<ul>
+						<li>Discoverability is no replacement for documentation</li>
+						<li>Document response formats, best practices, schemas, etc in text/HTML</li>
+						<li>Write documentation from process-perspective: What does the <strong>client developer</strong> want to achieve?</li>
+					</ul>
+				</section>
 
                 <!-- MISC -->
 
                 <section>
                     <section>
                         <h1>Best practices / lessons learned</h1>
+                    </section>
+					
+                    <section>
+                        <h2>Learn HTTP</h2>
+                        <p>Figure out what the verbs really <em>mean</em>, and why they exist</p>
+                        <p>Learn about link relations, curies, etc</p>
+                        <p>Use HTTP response codes instead of custom solutions</p>
                     </section>
 
                     <section>
@@ -518,19 +588,7 @@ The result:
                     </section>
 
                     <section>
-                        <h2>Documentation</h2>
-                        <p>Write documentation from process-perspective: What does the client developer want to achieve?</p>
-                        <p>Discoverability is no replacement for documentation</p>
-                    </section>
-
-                    <section>
-                        <h2>Discoverability</h2>
-                        <p>You don't have to design for run-time discoverability</p>
-                        <p>New relations mean implementation time at the client</p>
-                    </section>
-
-                    <section>
-                        <h2>Focus on the unhappy paths</h2>
+                        <h2>Spend time on the unhappy paths</h2>
                         <p>Design ALL error messages your API can generate and document them!</p>
                     </section>
 
@@ -539,7 +597,7 @@ The result:
                         <ul>
                             <li>What are my options?</li>
                             <li>Which changes are coming up?</li>
-                            <li>For each choice: Does it close off other interesting paths / extensions / alternatives?</li>
+                            <li>For each choice: Does it close off other interesting flows / extensions / alternatives?</li>
                         </ul>
                     </section>
 
